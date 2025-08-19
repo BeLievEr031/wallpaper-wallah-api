@@ -2,19 +2,19 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "wallpaper-wallah-backend",
   "main": "src/index.ts",
-  "compatibility_date": "2025-08-19"
+  "compatibility_date": "2025-08-19",
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
+  "kv_namespaces": [
+    {
+      "binding": "WALLPAPER_WALLAH_KV",
+      "id": "a98b45997292422e8193fb2d6f28e3c1"
+    }
+  ]
   // "r2_buckets": [
   //   {
   //     "binding": "MY_BUCKET",
