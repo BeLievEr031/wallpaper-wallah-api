@@ -4,17 +4,22 @@ import { createCategorySchema } from "../validators/category.validator";
 
 export const create = async (c: Context<{ Bindings: Bindings; }>) => {
     try {
-        const categoryData = await c.req.json()
-        const result = createCategorySchema.safeParse(categoryData)
+        const categoryData = await c.req.text()
+
+        if (!categoryData) {
+            return c.json({ error: "category required!!" }, 400)
+        }
+        let data = JSON.parse(categoryData)
+
+        const result = createCategorySchema.safeParse(data)
 
         if (!result.success) {
             const message = result.error.message;
-            console.log(result.error);
-            return c.json({ error: result.error })
+            return c.json({ error: message }, 400)
         }
 
         const obj = {
-            ...categoryData,
+            ...data,
             created_at: Date.now(),
             id: Date.now()
         }
@@ -26,9 +31,8 @@ export const create = async (c: Context<{ Bindings: Bindings; }>) => {
         })
 
     } catch (error) {
-        console.log("line 🔥🔥", error);
         return c.json({
-            error
-        })
+            error: error instanceof Error ? error.message : String(error)
+        }, 400)
     }
 }
