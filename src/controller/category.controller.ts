@@ -76,3 +76,42 @@ export const listCategories = async (c: Context<{ Bindings: Bindings }>) => {
         }, 400)
     }
 }
+
+
+export const deleteCategory = async (c: Context<{ Bindings: Bindings }>) => {
+    try {
+        const id = c.req.param("id"); // assuming route like /categories/:id
+
+        if (!id) {
+            return c.json({ error: "Category ID required" }, 400);
+        }
+
+        const key = `category:${id}`;
+
+        // check if category exists
+        const existing = await c.env.WALLPAPER_WALLAH_KV.get(key);
+        if (!existing) {
+            return c.json({ error: "Category not found" }, 404);
+        }
+
+        // delete from KV
+        await c.env.WALLPAPER_WALLAH_KV.delete(key);
+
+        // also clear cache for this route if needed
+        const cache = caches.default;
+        const cacheKey = new Request(c.req.url);
+        await cache.delete(cacheKey);
+
+        return c.json({
+            message: "Category deleted successfully!",
+            id,
+        });
+    } catch (error) {
+        return c.json(
+            {
+                error: error instanceof Error ? error.message : String(error),
+            },
+            400
+        );
+    }
+};
